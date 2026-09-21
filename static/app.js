@@ -42,7 +42,8 @@
    "mode-toggle", "mode-desc", "topn-row", "topn-toggle",
    "bout-category", "bout-counter", "progress-fill",
    "card-a", "name-a", "card-b", "name-b", "btn-tie", "btn-abandon",
-   "results-eyebrow", "results-category", "results-stat", "results-list", "btn-copy", "btn-new", "btn-back-history",
+   "results-eyebrow", "results-category", "results-stat", "results-list", "btn-copy", "btn-pdf", "btn-new", "btn-back-history",
+   "print-date",
    "fun-stats", "stat-tiles", "heaviest-list", "easiest-list",
    "history-list", "history-empty", "btn-back-setup", "btn-history"
   ].forEach(function (id) { el[id] = document.getElementById(id); });
@@ -321,6 +322,7 @@
     el["btn-back-history"].hidden = resultsSource !== "history";
     el["btn-new"].hidden = resultsSource === "history";
     el["btn-copy"].dataset.category = record.category;
+    el["print-date"].textContent = record.date ? new Date(record.date).toLocaleDateString() : new Date().toLocaleDateString();
   }
 
   function formatDuration(ms) {
@@ -420,6 +422,14 @@
     } else {
       flash("Copy not supported");
     }
+  });
+
+  el["btn-pdf"].addEventListener("click", function () {
+    var cat = el["results-category"].textContent || "Tier Tournament";
+    var originalTitle = document.title;
+    document.title = cat.replace(/[\\/:*?"<>|]/g, "").trim() || "Tier Tournament Results";
+    window.print();
+    document.title = originalTitle;
   });
 
   /* ---------- history view ---------- */

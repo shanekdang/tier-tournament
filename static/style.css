@@ -398,3 +398,36 @@ textarea { resize: vertical; font-family: "IBM Plex Mono", monospace; font-size:
 }
 
 [hidden] { display: none !important; }
+
+/* ---------- Print (results-to-PDF) ---------- */
+.print-only { display: none; }
+@media print {
+  :root {
+    --ground: #ffffff !important;
+    --surface: #ffffff !important;
+    --surface-raised: #f4f4f4 !important;
+    --line: #cccccc !important;
+    --text: #000000 !important;
+    --text-dim: #333333 !important;
+    --text-faint: #555555 !important;
+    --gold: #8a6a10 !important;
+    --gold-ink: #ffffff !important;
+    --silver: #555555 !important;
+    --bronze: #6b4116 !important;
+    --shadow: none !important;
+  }
+  body { padding: 0 !important; }
+  #app { max-width: 100% !important; }
+  .masthead, .results-actions, #resume-banner, .tie-hint, #btn-history { display: none !important; }
+  .corner-card, .btn, .standing-row, .stat-tile, .debate-list li { box-shadow: none !important; }
+  .print-only {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .print-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.03em; }
+  .print-date { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: #555; }
+}

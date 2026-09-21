@@ -103,6 +103,10 @@
     </section>
 
     <section id="view-results" class="view" hidden>
+      <div id="print-header" class="print-only">
+        <span class="print-title">TIER TOURNAMENT</span>
+        <span id="print-date" class="print-date"></span>
+      </div>
       <div class="results-header">
         <span id="results-eyebrow" class="field-label">FINAL STANDINGS</span>
         <h2 id="results-category" class="section-title"></h2>
@@ -122,6 +126,7 @@
 
       <div class="results-actions">
         <button id="btn-copy" class="btn btn-ghost" type="button">Copy as text</button>
+        <button id="btn-pdf" class="btn btn-ghost" type="button">Download as PDF</button>
         <button id="btn-new" class="btn btn-primary" type="button">Start New Tournament</button>
         <button id="btn-back-history" class="btn btn-ghost" type="button" hidden>Back to history</button>
       </div>
