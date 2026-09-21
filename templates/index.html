@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tier Tournament</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div id="app">
+    <header class="masthead">
+      <div>
+        <span class="masthead-eyebrow">HEAD-TO-HEAD RANKING</span>
+        <h1 class="masthead-title">TIER TOURNAMENT</h1>
+      </div>
+      <button id="btn-history" class="link-btn" hidden type="button">Past results</button>
+    </header>
+
+    <section id="view-setup" class="view">
+      <p class="instructions">
+        Build your roster, then vote on each head-to-head matchup: pick whichever contender you'd genuinely
+        rather have ranked higher. <strong>Even a slim preference beats a tie</strong> — save "too close to
+        call" for genuine dead heats. The more real decisions your group makes, the sharper the final ranking.
+      </p>
+
+      <div id="resume-banner" class="resume-banner" hidden>
+        <div class="resume-banner-text">
+          <strong id="resume-title"></strong>
+          <span id="resume-sub" class="text-dim mono"></span>
+        </div>
+        <div class="resume-actions">
+          <button id="btn-resume" class="btn btn-gold" type="button">Resume</button>
+          <button id="btn-discard" class="btn btn-ghost" type="button">Discard</button>
+        </div>
+      </div>
+
+      <div id="setup-form">
+        <label class="field-label" for="input-category">CATEGORY</label>
+        <input id="input-category" type="text" placeholder="e.g. Best Fruits" maxlength="60" autocomplete="off" />
+
+        <label class="field-label" for="input-candidate">ROSTER</label>
+        <div class="add-row">
+          <input id="input-candidate" type="text" placeholder="Add a contender…" maxlength="60" autocomplete="off" />
+          <button id="btn-add" class="btn btn-gold" type="button">Add</button>
+        </div>
+        <div id="add-msg" class="inline-msg"></div>
+        <button id="btn-toggle-bulk" class="link-btn" type="button">+ paste a list</button>
+        <div id="bulk-area" hidden style="margin-top:10px;">
+          <textarea id="input-bulk" rows="5" placeholder="One contender per line…"></textarea>
+          <button id="btn-add-bulk" class="btn btn-ghost" type="button" style="margin-top:8px;">Add all</button>
+        </div>
+
+        <ol id="roster-list" class="roster-list"></ol>
+        <p id="roster-empty" class="text-faint" style="margin-top:12px;">No contenders yet — add at least two to begin.</p>
+
+        <label class="field-label">MODE</label>
+        <div class="segmented" id="mode-toggle" role="group" aria-label="Tournament mode">
+          <button class="segmented-btn" data-mode="full" type="button">Complete Ranking</button>
+          <button class="segmented-btn" data-mode="quick" type="button">Quick Mode</button>
+        </div>
+        <p id="mode-desc" class="text-faint" style="margin-top:6px;"></p>
+
+        <div id="topn-row" hidden style="margin-top:14px;">
+          <label class="field-label">HOW MANY TOP SPOTS?</label>
+          <div class="segmented" id="topn-toggle" role="group" aria-label="Number of top spots">
+            <button class="segmented-btn" data-topn="1" type="button">Top 1</button>
+            <button class="segmented-btn" data-topn="3" type="button">Top 3</button>
+            <button class="segmented-btn" data-topn="5" type="button">Top 5</button>
+          </div>
+        </div>
+
+        <button id="btn-begin" class="btn btn-primary btn-block" disabled type="button">Begin Tournament</button>
+      </div>
+    </section>
+
+    <section id="view-tournament" class="view" hidden>
+      <div class="bout-meta">
+        <span id="bout-category" class="mono text-dim"></span>
+        <span id="bout-counter" class="mono"></span>
+      </div>
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+
+      <div class="ring">
+        <button id="card-a" class="corner-card corner-a" type="button">
+          <span class="corner-label">RED CORNER</span>
+          <span id="name-a" class="corner-name"></span>
+        </button>
+        <div class="vs-disc">VS</div>
+        <button id="card-b" class="corner-card corner-b" type="button">
+          <span class="corner-label">BLUE CORNER</span>
+          <span id="name-b" class="corner-name"></span>
+        </button>
+      </div>
+
+      <button id="btn-tie" class="btn btn-ghost btn-block" type="button">Too close to call — draw</button>
+      <p class="tie-hint text-faint">Last resort — if you lean either way at all, even barely, pick that one.</p>
+      <div style="text-align:center; margin-top:14px;">
+        <button id="btn-abandon" class="link-btn danger" type="button">Abandon tournament</button>
+      </div>
+    </section>
+
+    <section id="view-results" class="view" hidden>
+      <div class="results-header">
+        <span id="results-eyebrow" class="field-label">FINAL STANDINGS</span>
+        <h2 id="results-category" class="section-title"></h2>
+        <p id="results-stat" class="text-dim mono"></p>
+      </div>
+      <ol id="results-list" class="standings-list"></ol>
+
+      <div id="fun-stats" class="fun-stats" hidden>
+        <span class="field-label">FUN STATS</span>
+        <div id="stat-tiles" class="stat-grid"></div>
+        <div class="debate-lists">
+          <div id="heaviest-list" class="debate-list-col"></div>
+          <div id="easiest-list" class="debate-list-col"></div>
+        </div>
+        <p class="text-faint">Timed from when a matchup appears to when you vote — so a bathroom break might sneak into "heaviest debate."</p>
+      </div>
+
+      <div class="results-actions">
+        <button id="btn-copy" class="btn btn-ghost" type="button">Copy as text</button>
+        <button id="btn-new" class="btn btn-primary" type="button">Start New Tournament</button>
+        <button id="btn-back-history" class="btn btn-ghost" type="button" hidden>Back to history</button>
+      </div>
+    </section>
+
+    <section id="view-history" class="view" hidden>
+      <div class="results-header">
+        <span class="field-label">PAST RESULTS</span>
+        <h2 class="section-title">Tournament History</h2>
+      </div>
+      <ol id="history-list" class="history-list"></ol>
+      <p id="history-empty" class="text-faint" hidden>No saved tournaments yet.</p>
+      <div style="margin-top:16px;">
+        <button id="btn-back-setup" class="link-btn" type="button">← Back</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
